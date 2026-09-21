@@ -1,32 +1,25 @@
 <!doctype html>
-<html lang="my"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><title>စာ → ဇယား</title>
+<html lang="my"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><title>ဇယားရေးရန်</title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#f4f6f8;color:#17202a;font-family:sans-serif}header{background:#1976d2;color:white;padding:18px 16px;font-size:22px;font-weight:700}main{padding:14px;max-width:900px;margin:auto}.card{background:white;border-radius:14px;padding:14px;margin-bottom:14px;box-shadow:0 2px 8px #0001}label{font-weight:700;display:block;margin-bottom:8px}textarea{width:100%;min-height:170px;border:1px solid #ccd4dc;border-radius:10px;padding:12px;font-size:16px;resize:vertical}button{border:0;border-radius:10px;padding:11px 14px;font-size:15px;font-weight:700;margin:5px 3px 0 0;background:#1976d2;color:white}button.secondary{background:#e9eef3;color:#24313d}.hint{font-size:13px;color:#64717d;margin-top:8px;line-height:1.5}.toolbar{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}.tablewrap{overflow:auto}table{border-collapse:collapse;width:100%;min-width:420px}th,td{border:1px solid #cfd6dd;padding:8px;min-width:100px}th{background:#e8f1fb}td[contenteditable],th[contenteditable]{outline:none}td:focus,th:focus{box-shadow:inset 0 0 0 2px #1976d2}.empty{text-align:center;color:#77838f;padding:25px}
-</style></head>
-<body><header>📝 စာ → ဇယား</header><main>
-<div class="card"><label>စာကို ဒီမှာ ရိုက်ပါ / Paste လုပ်ပါ</label>
-<textarea id="input" placeholder="ဥပမာ
-အမည်,အသက်,မြို့
-မောင်မောင်,25,ရန်ကုန်
-စုစု,23,မန္တလေး"></textarea>
-<div class="hint">တစ်ကြောင်း = တစ်တန်း။ Column ခွဲရန် <b>comma (,)</b>၊ <b>|</b> သို့မဟုတ် <b>Tab</b> ကို အသုံးပြုနိုင်ပါတယ်။</div>
-<div class="toolbar"><button onclick="makeTable()">ဇယားဆွဲမယ်</button><button class="secondary" onclick="clearAll()">ရှင်းမယ်</button></div></div>
-<div class="card"><label>ဇယား</label><div id="tableBox" class="tablewrap"><div class="empty">စာထည့်ပြီး “ဇယားဆွဲမယ်” ကိုနှိပ်ပါ</div></div>
-<div class="toolbar"><button onclick="addRow()">+ တန်းထည့်</button><button onclick="addCol()">+ ကော်လံထည့်</button><button onclick="copyTable()">Copy</button><button onclick="saveTable()">သိမ်းမယ်</button><button onclick="shareTable()">Share</button></div></div>
-</main>
+*{box-sizing:border-box}body{margin:0;background:#f3f5f7;color:#111;font-family:sans-serif}header{background:#1976d2;color:#fff;padding:15px 14px;font-size:21px;font-weight:700;position:sticky;top:0;z-index:5}main{padding:10px}.card{background:#fff;border-radius:12px;padding:10px;box-shadow:0 2px 8px #0001}.hint{font-size:13px;color:#66717b;margin:4px 0 10px}.wrap{overflow:auto;border:1px solid #222}table{border-collapse:collapse;min-width:1100px;width:100%;table-layout:fixed}th,td{border:1.5px solid #222;text-align:center;vertical-align:middle;padding:7px 5px;min-width:90px;height:52px;font-size:15px}th{font-weight:700;background:#fff;height:62px}thead tr.sub th{height:45px}td{background:#fff}td[contenteditable]{outline:none;white-space:pre-wrap;word-break:break-word}td:focus{box-shadow:inset 0 0 0 2px #1976d2;background:#eef6ff}.narrow{min-width:55px;width:55px}.date{min-width:95px;width:95px}.name{min-width:180px;width:180px}.route{min-width:110px;width:110px}.small{min-width:85px;width:85px}.wide{min-width:150px;width:150px}.toolbar{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}button{border:0;border-radius:9px;padding:11px 14px;font-size:14px;font-weight:700;background:#1976d2;color:#fff}button.secondary{background:#e8edf2;color:#222}.tip{margin-top:8px;font-size:13px;color:#555}
+</style></head><body>
+<header>📝 ဇယားရေးရန်</header><main><div class="card">
+<div class="hint">အောက်က အဖြူကွက်တွေကို နှိပ်ပြီး တိုက်ရိုက်စာရိုက်နိုင်ပါတယ်။ ပုံထဲက ဇယားပုံစံအတိုင်း အတန်းအသစ်လည်း ထည့်နိုင်ပါတယ်။</div>
+<div class="wrap"><table id="tbl">
+<colgroup><col class="narrow"><col class="date"><col class="name"><col class="route"><col class="route"><col class="small"><col class="small"><col class="small"><col class="small"><col class="wide"></colgroup>
+<thead>
+<tr><th rowspan="2">စဉ်</th><th rowspan="2">ရက်စွဲ</th><th rowspan="2">အကြောင်းအရာ</th><th colspan="2">ခရီးမိုင်</th><th rowspan="2">ယာဉ်<br>အမှတ်</th><th rowspan="2">ယာဉ်<br>အမျိုးအစား</th><th rowspan="2">တင်/ချ<br>ပစ္စည်း</th><th rowspan="2">မှတ်ချက်</th><th rowspan="2">အထက်အောက်<br>အချက်အလက်</th></tr>
+<tr class="sub"><th>မှ</th><th>ထိ</th></tr>
+</thead><tbody id="body"></tbody></table></div>
+<div class="toolbar"><button onclick="addRow()">+ အတန်းထည့်</button><button onclick="save()">💾 သိမ်းမယ်</button><button onclick="copy()">📋 Copy</button><button class="secondary" onclick="clearRows()">ရှင်းမယ်</button></div>
+<div class="tip">💡 စာရေးပြီးနောက် “သိမ်းမယ်” နှိပ်ပါ။ App ပိတ်ပြီး ပြန်ဖွင့်လည်း သိမ်းထားတဲ့ဇယားကို ဆက်ရေးနိုင်ပါတယ်။</div>
+</div></main>
 <script>
-let data=[];
-const input=document.getElementById('input'), box=document.getElementById('tableBox');
-function parseText(){const lines=input.value.trim().split(/\r?\n/).filter(function(x){return x.trim();});if(!lines.length)return [];let sample=lines[0],delim=sample.indexOf('\t')>=0?'\t':sample.indexOf('|')>=0?'|':',';return lines.map(function(line){return line.split(delim).map(function(x){return x.trim();});});}
-function makeTable(){data=parseText();render();localStorage.setItem('tt_data',JSON.stringify(data));}
-function render(){if(!data.length){box.innerHTML='<div class="empty">ဇယားမရှိသေးပါ</div>';return;}let cols=Math.max.apply(null,data.map(function(r){return r.length;}));let h='<table><thead><tr>';for(let c=0;c<cols;c++)h+='<th contenteditable="true" data-r="0" data-c="'+c+'">'+esc((data[0]&&data[0][c])||'')+'</th>';h+='</tr></thead><tbody>';for(let r=1;r<data.length;r++){h+='<tr>';for(let c=0;c<cols;c++)h+='<td contenteditable="true" data-r="'+r+'" data-c="'+c+'">'+esc((data[r]&&data[r][c])||'')+'</td>';h+='</tr>';}h+='</tbody></table>';box.innerHTML=h;box.querySelectorAll('[contenteditable]').forEach(function(el){el.addEventListener('input',function(){data[+el.dataset.r][+el.dataset.c]=el.innerText;});});}
-function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-function addRow(){if(!data.length)data=[['']];let n=Math.max.apply(null,data.map(function(r){return r.length;}));data.push(Array(n).fill(''));render();}
-function addCol(){if(!data.length)data=[['']];data.forEach(function(r){r.push('');});render();}
-function tableTSV(){return data.map(function(r){return r.map(function(x){return String(x==null?'':x).replace(/\t/g,' ');}).join('\t');}).join('\n');}
-function copyTable(){let t=tableTSV();if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(function(){alert('Copy လုပ်ပြီးပါပြီ');});}else{prompt('Copy လုပ်ရန်',t);}}
-function saveTable(){localStorage.setItem('tt_data',JSON.stringify(data));localStorage.setItem('tt_input',input.value);alert('သိမ်းပြီးပါပြီ');}
-function shareTable(){let t=tableTSV();if(window.Android)Android.shareText(t);else if(navigator.share)navigator.share({title:'စာ → ဇယား',text:t});}
-function clearAll(){if(confirm('အားလုံးရှင်းမလား?')){input.value='';data=[];localStorage.removeItem('tt_data');localStorage.removeItem('tt_input');render();}}
-(function(){try{let d=JSON.parse(localStorage.getItem('tt_data')||'null');if(d){data=d;input.value=localStorage.getItem('tt_input')||'';render();}}catch(e){}})();
+const body=document.getElementById('body');let rows=[];
+function addRow(values){rows.push(values||Array(10).fill(''));render()}
+function render(){body.innerHTML='';rows.forEach((r,ri)=>{const tr=document.createElement('tr');for(let c=0;c<10;c++){const td=document.createElement('td');td.contentEditable='true';td.textContent=(c===0&&!r[c])?String(ri+1):(r[c]||'');td.addEventListener('input',()=>rows[ri][c]=td.innerText);tr.appendChild(td)}body.appendChild(tr)})}
+function save(){localStorage.setItem('fixed_table',JSON.stringify(rows));alert('ဇယားကို သိမ်းပြီးပါပြီ')}
+function copy(){const text=rows.map(r=>r.join('\t')).join('\n');if(navigator.clipboard)navigator.clipboard.writeText(text).then(()=>alert('Copy လုပ်ပြီးပါပြီ'));else prompt('Copy လုပ်ရန်',text)}
+function clearRows(){if(confirm('ဇယားထဲက ရေးထားတာအားလုံး ရှင်းမလား?')){rows=[];for(let i=0;i<8;i++)rows.push(Array(10).fill(''));render();save()}}
+(function(){try{const d=JSON.parse(localStorage.getItem('fixed_table')||'null');if(Array.isArray(d)&&d.length)rows=d;else for(let i=0;i<8;i++)rows.push(Array(10).fill(''));render()}catch(e){for(let i=0;i<8;i++)rows.push(Array(10).fill(''));render()}})();
 </script></body></html>
