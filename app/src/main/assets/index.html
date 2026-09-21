@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="my"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><title>စာ → ဇယား</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f4f6f8;color:#17202a;font-family:sans-serif}header{background:#1976d2;color:white;padding:18px 16px;font-size:22px;font-weight:700}main{padding:14px;max-width:900px;margin:auto}.card{background:white;border-radius:14px;padding:14px;margin-bottom:14px;box-shadow:0 2px 8px #0001}label{font-weight:700;display:block;margin-bottom:8px}textarea{width:100%;min-height:170px;border:1px solid #ccd4dc;border-radius:10px;padding:12px;font-size:16px;resize:vertical}button{border:0;border-radius:10px;padding:11px 14px;font-size:15px;font-weight:700;margin:5px 3px 0 0;background:#1976d2;color:white}button.secondary{background:#e9eef3;color:#24313d}.hint{font-size:13px;color:#64717d;margin-top:8px;line-height:1.5}.toolbar{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}.tablewrap{overflow:auto}table{border-collapse:collapse;width:100%;min-width:420px}th,td{border:1px solid #cfd6dd;padding:8px;min-width:100px}th{background:#e8f1fb}td[contenteditable],th[contenteditable]{outline:none}td:focus,th:focus{box-shadow:inset 0 0 0 2px #1976d2}.empty{text-align:center;color:#77838f;padding:25px}
+</style></head>
+<body><header>📝 စာ → ဇယား</header><main>
+<div class="card"><label>စာကို ဒီမှာ ရိုက်ပါ / Paste လုပ်ပါ</label>
+<textarea id="input" placeholder="ဥပမာ
+အမည်,အသက်,မြို့
+မောင်မောင်,25,ရန်ကုန်
+စုစု,23,မန္တလေး"></textarea>
+<div class="hint">တစ်ကြောင်း = တစ်တန်း။ Column ခွဲရန် <b>comma (,)</b>၊ <b>|</b> သို့မဟုတ် <b>Tab</b> ကို အသုံးပြုနိုင်ပါတယ်။</div>
+<div class="toolbar"><button onclick="makeTable()">ဇယားဆွဲမယ်</button><button class="secondary" onclick="clearAll()">ရှင်းမယ်</button></div></div>
+<div class="card"><label>ဇယား</label><div id="tableBox" class="tablewrap"><div class="empty">စာထည့်ပြီး “ဇယားဆွဲမယ်” ကိုနှိပ်ပါ</div></div>
+<div class="toolbar"><button onclick="addRow()">+ တန်းထည့်</button><button onclick="addCol()">+ ကော်လံထည့်</button><button onclick="copyTable()">Copy</button><button onclick="saveTable()">သိမ်းမယ်</button><button onclick="shareTable()">Share</button></div></div>
+</main>
+<script>
+let data=[];
+const input=document.getElementById('input'), box=document.getElementById('tableBox');
+function parseText(){const lines=input.value.trim().split(/\r?\n/).filter(function(x){return x.trim();});if(!lines.length)return [];let sample=lines[0],delim=sample.indexOf('\t')>=0?'\t':sample.indexOf('|')>=0?'|':',';return lines.map(function(line){return line.split(delim).map(function(x){return x.trim();});});}
+function makeTable(){data=parseText();render();localStorage.setItem('tt_data',JSON.stringify(data));}
+function render(){if(!data.length){box.innerHTML='<div class="empty">ဇယားမရှိသေးပါ</div>';return;}let cols=Math.max.apply(null,data.map(function(r){return r.length;}));let h='<table><thead><tr>';for(let c=0;c<cols;c++)h+='<th contenteditable="true" data-r="0" data-c="'+c+'">'+esc((data[0]&&data[0][c])||'')+'</th>';h+='</tr></thead><tbody>';for(let r=1;r<data.length;r++){h+='<tr>';for(let c=0;c<cols;c++)h+='<td contenteditable="true" data-r="'+r+'" data-c="'+c+'">'+esc((data[r]&&data[r][c])||'')+'</td>';h+='</tr>';}h+='</tbody></table>';box.innerHTML=h;box.querySelectorAll('[contenteditable]').forEach(function(el){el.addEventListener('input',function(){data[+el.dataset.r][+el.dataset.c]=el.innerText;});});}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function addRow(){if(!data.length)data=[['']];let n=Math.max.apply(null,data.map(function(r){return r.length;}));data.push(Array(n).fill(''));render();}
+function addCol(){if(!data.length)data=[['']];data.forEach(function(r){r.push('');});render();}
+function tableTSV(){return data.map(function(r){return r.map(function(x){return String(x==null?'':x).replace(/\t/g,' ');}).join('\t');}).join('\n');}
+function copyTable(){let t=tableTSV();if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(function(){alert('Copy လုပ်ပြီးပါပြီ');});}else{prompt('Copy လုပ်ရန်',t);}}
+function saveTable(){localStorage.setItem('tt_data',JSON.stringify(data));localStorage.setItem('tt_input',input.value);alert('သိမ်းပြီးပါပြီ');}
+function shareTable(){let t=tableTSV();if(window.Android)Android.shareText(t);else if(navigator.share)navigator.share({title:'စာ → ဇယား',text:t});}
+function clearAll(){if(confirm('အားလုံးရှင်းမလား?')){input.value='';data=[];localStorage.removeItem('tt_data');localStorage.removeItem('tt_input');render();}}
+(function(){try{let d=JSON.parse(localStorage.getItem('tt_data')||'null');if(d){data=d;input.value=localStorage.getItem('tt_input')||'';render();}}catch(e){}})();
+</script></body></html>
